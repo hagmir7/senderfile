@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock head %}
+{% block content %}
+<div class="container">
+  <div id="content-wrapper">
+    <div id="content" class="content p-0">
+        <div class="profile-header rounded">
+            <div class="profile-header-cover"></div>
+    
+            <div class="profile-header-content">
+                <div class="profile-header-img">
+                    <img class="w-100 cover" src="{{ page.avatar.url }}" alt="{{ page.user.username}}" />
+                </div>
+    
+                <div class="profile-header-info">
+                    <h1 class="m-t-sm h4">{{ page.user.first_name }} {{ page.user.last_name }}</h1>
+                    <p class="m-b-sm">@{{ page.user }}</p>
+                    {% if user.profile.id == page.id %}
+                    <a href="{% url 'profile_update' page.id %}" class="btn btn-xs btn-info mb-4">{% trans "Update Profile" %}</a>
+                    {% else %}
+                    {% endif %}
+                </div>
+            </div>
+    
+            <ul class="profile-header-tab nav nav-tabs">
+                <li class="nav-item show active"><a href="{% url 'profile' page.slug %}" class="nav-link_">{% trans "Articles" %}</a></li>
+                <li class="nav-item"><a href="{% url 'profile_books' page.slug %}" class="nav-link_">{% trans "Books" %}</a></li>
+                {% comment %} <li class="nav-item"><a href="" class="nav-link_">{% trans "Photos" %}</a></li> {% endcomment %}
+                <li class="nav-item"><a href="{% url 'profile_videos' page.slug %}" class="nav-link_">{% trans "Videos" %}</a></li>
+                {% comment %} <li class="nav-item"><a href="h#" class="nav-link_">{% trans "Followrs" %}</a></li> {% endcomment %}
+            </ul>
+        </div>
+    
+        <div class="profile-container">
+            <div class="row row-space-20">
+                <div class="col-md-8">
+                    <div class="tab-content p-0">
+                      {% block profile %}{% endblock profile %}
+                    </div>
+                </div>
+                <div class="col-md-4 hidden-xs hidden-sm">
+                    <ul class="profile-info-list">
+                        <li class="title">{% trans "About" %} {{ page.user.first_name }}</li>
+                        <li>
+                            <div class="field">{% trans "Email" %}:</div>
+                            <div class="value">{{ page.user.email }}</div>
+                        </li>
+                        <li>
+                            <div class="field">{% trans "Username" %}:</div>
+                            <div class="value">@{{ page.user }}</div>
+                        </li>
+                        {% if page.birth %}
+                         <li>
+                            <div class="field">{% trans "Birth" %}:</div>
+                            <div class="value">{{ page.birth }}</div>
+                        </li>
+                        {% endif %}
+                       
+                        {% if page.country %}
+                        <li>
+                            <div class="field">{% trans "Country" %}:</div>
+                            <div class="value">{{ page.country }}</div>
+                        </li>
+                        {% endif %}
+                        
+                        {% if page.phone %}
+                        <li>
+                            <div class="field">{% trans "Phone" %}:</div>
+                            <div class="value">{{ page.phone }}</div>
+                        </li>
+                        {% endif %}
+                        <li>
+                          <div class="field">{% trans "Followrs" %}: ({{ page.follow.all.count }})</div>
+                         </li>
+                        <li class="img-list">
+                          {% for user in page.follow.all|slice:":15" %}
+                            <a href="{% url 'profile' user.slug %}" class="m-b-5"><img src="{{ user.profile.avatar.url }}" alt="{{ user }}" /></a>
+                          {% endfor %}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
