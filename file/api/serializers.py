@@ -19,9 +19,17 @@ class FolderSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class TokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Token
+        fields = "__all__"
+
+
 class FileSerializer(serializers.ModelSerializer):
-    folder = FolderSerializer()
-    user = UserSerializer()
+    folder = FolderSerializer(required=False)
+    user = UserSerializer(required=False)
+    token_storage = TokenSerializer(required=False)
+
     class Meta:
         model = File
         fields = "__all__"

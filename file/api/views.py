@@ -16,8 +16,20 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework import viewsets
 from django.utils.translation import gettext_lazy as _
 from django.forms.models import model_to_dict
+from rest_framework.permissions import AllowAny
 
 from file.models import *
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def createToken(request):
+    if request.method == "POST":
+        token = Token.objects.create()
+        serializer = TokenSerializer(token, many=False)
+        return Response({"token": serializer.data})
+    else:
+        return Response({"error": "Request is POST"})
 
 
 @login_required(login_url="login")
@@ -40,3 +52,36 @@ def files(request):
 
     serializer = FileSerializer(files, many=True)
     return JsonResponse({"files": serializer.data, "has_next": files.has_next()})
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def file(request, slug):
+    file_object = get_object_or_404(File, slug=slug)
+    serializer = FileSerializer(file_object)
+    return Response({"file": serializer.data})
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def filesTokenList(request, token):
+    token_instance = get_object_or_404(Token, token=token)
+    files = File.objects.filter(token_storage=token_instance)
+    serializer = FileSerializer(files, many=True)  # Assuming you want many files serialized
+    return Response({"files": serializer.data})
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def upload(request):
+    if request.method == 'POST' and 'file' in request.FILES:
+        token = get_object_or_404(Token, token=request.GET.get("token"))
+
+        serializer = FileSerializer(data=request.FILES)  # Pass request.FILES for file upload
+        if serializer.is_valid():
+            serializer.save(token_storage=token)
+            return Response({"file": serializer.data}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response({'status': 'file not found'}, status=status.HTTP_400_BAD_REQUEST)
