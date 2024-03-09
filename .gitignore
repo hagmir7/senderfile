@@ -8,7 +8,9 @@
 # Icon must end with two \r
 Icon
 
-.vscode/
+
+
+
 
 # Thumbnails
 ._*
@@ -37,6 +39,8 @@ __pycache__/
 .Python
 env/
 media/
+.vscode/
+logs/
 build/
 develop-eggs/
 dist/
