@@ -33,3 +33,46 @@ class FileSerializer(serializers.ModelSerializer):
     class Meta:
         model = File
         fields = "__all__"
+
+
+class LanguageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Language
+        fields = "__all__"
+
+class PostCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostComment
+        fields = "__all__"
+
+
+class PostCategorySerializer(serializers.ModelSerializer):
+    language = LanguageSerializer(required=False)
+    user = UserSerializer(required=False)
+    comments = PostCommentSerializer(many=True, read_only=True)
+    class Meta:
+        model = PostCategory
+        fields = "__all__"
+
+
+class PostSerializer(serializers.ModelSerializer):
+    user = UserSerializer(required=False)
+    category = PostCategorySerializer(required=False)
+    language = LanguageSerializer(required=False)
+    class Meta:
+        model = Post
+        fields = "__all__"
+
+
+
+class SubscribeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subscribe
+        fields = "__all__"
+
+
+class FileRaportSerializer(serializers.ModelSerializer):
+    file = FileSerializer(required=False)
+    class Meta:
+        model = FileRaport
+        fields = "__all__"

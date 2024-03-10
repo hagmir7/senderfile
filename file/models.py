@@ -46,6 +46,11 @@ files = [
 ]
 
 
+class ApiKey(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    key = models.UUIDField(default=uuid.uuid4)  # editable=False
+
+
 class Folder(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
@@ -173,7 +178,7 @@ class Post(models.Model):
     def save(self, *args, **kwargs):
         random = get_random_string(length=5)
         if not self.slug:
-            self.slug = slugify(f"{str(self.name)}-{str(random)}" )
+            self.slug = slugify(f"{str(self.title)}-{str(random)}" )
         super(Post, self).save(*args, **kwargs)
     
 
