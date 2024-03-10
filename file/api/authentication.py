@@ -12,11 +12,13 @@ class ApiKeyAuthentication(BaseAuthentication):
 
         if not key:
             raise AuthenticationFailed(
-                "Please submit your request using the AL KORA API KEY."
+                "Please submit your request using the SENDER FILE API KEY."
             )
 
         try:
             api_key = ApiKey.objects.get(key=key)
+            if not api_key.status:
+                raise AuthenticationFailed("API KEY is not valid.")
         except ApiKey.DoesNotExist:
             raise AuthenticationFailed("API KEY is not valid.")
 

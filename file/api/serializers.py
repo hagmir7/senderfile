@@ -64,7 +64,6 @@ class PostSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-
 class SubscribeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscribe
@@ -76,3 +75,10 @@ class FileRaportSerializer(serializers.ModelSerializer):
     class Meta:
         model = FileRaport
         fields = "__all__"
+
+
+class ApiKeySerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    class Meta:
+        model = ApiKey
+        fields = ("__all__")

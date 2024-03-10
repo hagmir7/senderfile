@@ -20,7 +20,16 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from file.models import *
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, BasePermission
+
+
+class IsSuperuser(BasePermission):
+    """
+    Allows access only to superusers.
+    """
+
+    def has_permission(self, request, view):
+        return request.user and request.user.is_superuser
 
 
 # JWT Views
@@ -163,3 +172,94 @@ def post_create(request):
         serializer.save(user=request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# Language
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def language_list(request):
+    if request.method == "GET":
+        languages = Language.objects.all()
+        serializer = LanguageSerializer(languages, many=True)
+        return Response(serializer.data)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def create_language(request):
+    if request.method == "POST":
+        serializer = LanguageSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def delete_language(request, pk):
+    language = get_object_or_404(Language, pk=pk)
+    language.delete()
+    return Response({"message": "Language deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+
+
+# API KEY
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def create_api_key(request):
+    if request.method == "POST":
+        request.data["user"] = request.user.id
+        serializer = ApiKeySerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["PUT"])
+@permission_classes([IsAuthenticated])
+def update_api_key(request, pk):
+    api_key = get_object_or_404(ApiKey, pk=pk)
+    if request.method == "PUT":
+        serializer = ApiKeySerializer(api_key, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["DELETE"])
+@permission_classes([IsSuperuser])
+def delete_api_key(request, pk):
+    api_key = get_object_or_404(ApiKey, pk=pk)
+    if api_key.user == request.user:
+        api_key.delete()
+        return Response({"detail" : 'API KEY Deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+    else:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+import uuid
+@api_view(["PUT"])
+@permission_classes([IsAuthenticated])
+def regenerate_api_key(request, pk):
+    api_key = get_object_or_404(ApiKey, pk=pk)
+    if request.method == "PUT":
+        serializer = ApiKeySerializer(api_key, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save(key=uuid.uuid4())
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def detail_api_key(request, pk):
+    api_key = get_object_or_404(ApiKey, pk=pk)
+    if api_key.user == request.user:
+        serializer = ApiKeySerializer(api_key)
+        return Response(serializer.data)
+    else:
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -48,7 +48,11 @@ files = [
 
 class ApiKey(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    key = models.UUIDField(default=uuid.uuid4)  # editable=False
+    status = models.BooleanField(default=False, null=True, blank=True)
+    key = models.UUIDField(default=uuid.uuid4, unique=True)  # editable=False
+
+    def __str__(self):
+        return str(self.key)
 
 
 class Folder(models.Model):
@@ -131,7 +135,7 @@ class File(models.Model):
 
 class Language(models.Model):
     name = models.CharField(max_length=30)
-    code = models.CharField(max_length=3)
+    code = models.CharField(max_length=5, unique=True)
 
     def __str__(self):
         return self.name
