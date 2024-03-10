@@ -1,0 +1,80 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sender File | File storage and sharing</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static "assets/img/favicons/apple-touch-icon.png" %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static "assets/img/favicons/favicon-32x32.png" %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static "assets/img/favicons/favicon-16x16.png" %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static "assets/img/favicons/favicon.png" %}">
+    <link rel="manifest" href="{% static "assets/img/favicons/manifest.json" %}">
+    <meta name="msapplication-TileImage" content="{% static "assets/img/favicons/mstile-150x150.png" %}">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta name="keywords" content=" Learn Programming, Coding Skills, Programming World, SenderFile, Coding Tutorials, Software Development, Programming Languages, Web Development, Programming Basics, Tech Education ">
+    <meta name="description" content="Are you tired of juggling multiple platforms for file storage and sharing? Welcome to Sender File, your all-in-one solution for seamless and secure file management." />
+    <link rel='canonical' href='{{ request.scheme }}://{{ request.get_host }}{{ request.path }}' />
+    <link rel="icon" href='/media/Favicons/favicon-32x32.png' type="image/png">
+    <meta property="image" content="/media/Logos/MeryLivre_1.png" />
+    <meta name="author" content="SenderFile">
+    <meta name="theme-color" content="#2dce89" />
+    <!-- Open graph -->
+    <meta property="og:title" content="Sender File | File storage and sharing" />
+    <meta property="og:description" content="Are you tired of juggling multiple platforms for file storage and sharing? Welcome to Sender File, your all-in-one solution for seamless and secure file management." />
+    <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}" />
+    <meta property="og:site_name" content="SenderFile" />
+    <meta property="og:image" content="/media/Logos/MeryLivre_1.png" />
+    <meta property="og:image:width" content="300" />
+    <meta property="og:image:height" content="300" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:locale" content="en_US" />
+    <!-- Twitter -->
+    <meta name="twitter:creator" content="@SenderFile" />
+    <meta name="twitter:site" content="@SenderFile" />
+    <meta name="twitter:label1" content="SenderFile" />
+    <meta name="twitter:data1" content="SenderFile" />
+    <meta property="og:type" content="website" />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="{% static "assets/css/theme.css" %}" rel="stylesheet" />
+
+    {% block head %}{% endblock head %}
+  </head>
+
+
+  <body>
+
+    <!-- ===============================================-->
+    <!--    Main Content-->
+    <!-- ===============================================-->
+    <main class="main" id="top">
+     {% include "components/header.html" %}
+     {% block content %}{% endblock content %}
+
+
+
+     {% include "components/footer.html" %}
+    </main>
+
+
+
+
+    <!-- ===============================================-->
+    <!--    JavaScripts-->
+    <!-- ===============================================-->
+    <script src="{% static "vendors/@popperjs/popper.min.js" %}"></script>
+    <script src="{% static "vendors/bootstrap/bootstrap.min.js" %}"></script>
+    <script src="{% static "vendors/is/is.min.js" %}"></script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
+    <script src="{% static "vendors/fontawesome/all.min.js" %}"></script>
+    <script src="{% static "assets/js/theme.js" %}"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&amp;family=Volkhov:wght@700&amp;display=swap" rel="stylesheet">
+  </body>
+
+</html>
