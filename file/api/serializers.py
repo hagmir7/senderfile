@@ -82,3 +82,27 @@ class ApiKeySerializer(serializers.ModelSerializer):
     class Meta:
         model = ApiKey
         fields = ("__all__")
+
+
+class PostCommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostComment
+        fields = "__all__"
+
+
+class SubscribeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subscribe
+        fields = "__all__"
+
+
+class FileRaportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FileRaport
+        fields = "__all__"
+
+
+class PostCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostCategory
+        fields = "__all__"

@@ -125,9 +125,21 @@ def upload(request):
 @permission_classes([AllowAny])
 def post_detail(request, slug):
     post = get_object_or_404(Post, slug=slug)
-    if request.method == 'GET':
-        serializer = PostSerializer(post)
-        return Response(serializer.data)
+    if request.method == "GET":
+        list = PostComment.objects.filter(post=post)
+        paginator = Paginator(list, 10)
+        try:
+            comments = paginator.page(request.GET.get("page"))
+        except PageNotAnInteger:
+            comments = paginator.page(1)
+        except EmptyPage:
+            return Response({"data": [], "has_next": False})
+
+        comment_serializer = PostCommentSerializer(comments, many=True)
+        post_serializer = PostSerializer(post, many=False)
+        return Response({"post": post_serializer.data, "comments": comment_serializer.data, "has_next": comments.has_next()})
+    
+
 
     elif request.method == 'PUT':
         if request.user.is_superuser:
@@ -144,7 +156,7 @@ def post_detail(request, slug):
             return Response({"message": "Post deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({"detail": "Authentication credentials were not provided."}, status=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION)
-from .authentication import ApiKeyAuthentication
+
 
 
 @api_view(["GET"])
@@ -263,3 +275,83 @@ def detail_api_key(request, pk):
         return Response(serializer.data)
     else:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# Post Comments
+
+@api_view(["GET", "POST"])
+def post_comment_list(request):
+    if request.method == "GET":
+        comments = PostComment.objects.all()
+        serializer = PostCommentSerializer(comments, many=True)
+        return Response(serializer.data)
+
+    elif request.method == "POST":
+        serializer = PostCommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET", "PUT", "DELETE"])
+def post_comment_detail(request, pk):
+    try:
+        comment = PostComment.objects.get(pk=pk)
+    except PostComment.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == "GET":
+        serializer = PostCommentSerializer(comment)
+        return Response(serializer.data)
+
+    elif request.method == "PUT":
+        serializer = PostCommentSerializer(comment, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == "DELETE":
+        comment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(["GET", "POST"])
+def subscribe_list(request):
+    if request.method == "GET":
+        subscribers = Subscribe.objects.all()
+        serializer = SubscribeSerializer(subscribers, many=True)
+        return Response(serializer.data)
+
+    elif request.method == "POST":
+        serializer = SubscribeSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET", "PUT", "DELETE"])
+def subscribe_detail(request, pk):
+    try:
+        subscriber = Subscribe.objects.get(pk=pk)
+    except Subscribe.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == "GET":
+        serializer = SubscribeSerializer(subscriber)
+        return Response(serializer.data)
+
+    elif request.method == "PUT":
+        serializer = SubscribeSerializer(subscriber, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == "DELETE":
+        subscriber.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# Similarly, you can define views for FileRaport and PostCategory models
