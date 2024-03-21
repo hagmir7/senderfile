@@ -146,6 +146,13 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 
+CORS_ALLOW_HEADERS = [
+    "senderfile-api-key",
+    "SENDERFILE-API-KEY"
+    # Add other allowed headers as needed
+]
+
+
 if CPANEL:
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     SECURE_SSL_REDIRECT = True
