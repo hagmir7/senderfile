@@ -133,13 +133,17 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",  # Replace with your frontend's URL
-    "http://localhost:3000",
-]
 
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:8000",
+    "https://www.freewsad.com",
+    "https://freewsad.com",
+    "http://index.freesad.com",
+    "http://next.freesad.com",
+]
 
 
 if CPANEL:
